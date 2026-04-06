@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
+import os 
+import win32api # Added to fix WinError 1155 and handle automatic printing
 
 # Assuming marriage_cert_final is in your current directory
 try:
@@ -13,7 +15,7 @@ class MarriageApp:
         self.root = root
         self.root.title("Municipal Form No. 97 - Digital Registry")
         
-        # --- 1. NAVIGATION BAR (Added without touching canvas) ---
+        # --- 1. NAVIGATION BAR ---
         self.nav_bar = tk.Frame(root, bg="#2c3e50")
         self.nav_bar.pack(side="top", fill="x")
 
@@ -70,94 +72,162 @@ class MarriageApp:
         except FileNotFoundError:
             print("Error: form.jpg not found.")
 
-        # --- PRESERVED PAGE 1 FIELDS ---
+        # --- PAGE 1 FIELDS ---
         self.ent_prov = tk.Entry(self.root, width=25); self.apply_style(self.ent_prov); self.canvas.create_window(240, 95, window=self.ent_prov)
         self.ent_city = tk.Entry(self.root, width=25); self.apply_style(self.ent_city); self.canvas.create_window(270, 113, window=self.ent_city)
+
+        #Section 1: Name of Contracting Parties
+        #Husband
         self.ent_h_first = tk.Entry(self.root, width=30); self.apply_style(self.ent_h_first); self.canvas.create_window(300, 142, window=self.ent_h_first)
         self.ent_h_mid = tk.Entry(self.root, width=30); self.apply_style(self.ent_h_mid); self.canvas.create_window(300, 157, window=self.ent_h_mid)
         self.ent_h_last = tk.Entry(self.root, width=30); self.apply_style(self.ent_h_last); self.canvas.create_window(300, 172, window=self.ent_h_last)
+        #wife
         self.ent_w_first = tk.Entry(self.root, width=30); self.apply_style(self.ent_w_first); self.canvas.create_window(600, 142, window=self.ent_w_first)
         self.ent_w_mid = tk.Entry(self.root, width=30); self.apply_style(self.ent_w_mid); self.canvas.create_window(600, 157, window=self.ent_w_mid)
         self.ent_w_last = tk.Entry(self.root, width=30); self.apply_style(self.ent_w_last); self.canvas.create_window(600, 172, window=self.ent_w_last)
+        
+        # Section 2: Date of Birth & Age
+        # Husband
         self.ent_h_day = tk.Entry(self.root, width=4); self.apply_style(self.ent_h_day); self.canvas.create_window(195, 197, window=self.ent_h_day)
         self.ent_h_month = tk.Entry(self.root, width=10); self.apply_style(self.ent_h_month); self.canvas.create_window(270, 197, window=self.ent_h_month)
         self.ent_h_year = tk.Entry(self.root, width=6); self.apply_style(self.ent_h_year); self.canvas.create_window(347, 198, window=self.ent_h_year)
         self.ent_h_age = tk.Entry(self.root, width=4); self.apply_style(self.ent_h_age); self.canvas.create_window(430, 198, window=self.ent_h_age)
+        # Wife
         self.ent_w_day = tk.Entry(self.root, width=4); self.apply_style(self.ent_w_day); self.canvas.create_window(490, 199, window=self.ent_w_day)
         self.ent_w_month = tk.Entry(self.root, width=10); self.apply_style(self.ent_w_month); self.canvas.create_window(565, 199, window=self.ent_w_month)
         self.ent_w_year = tk.Entry(self.root, width=6); self.apply_style(self.ent_w_year); self.canvas.create_window(640, 199, window=self.ent_w_year)
         self.ent_w_age = tk.Entry(self.root, width=4); self.apply_style(self.ent_w_age); self.canvas.create_window(725, 199, window=self.ent_w_age)
+        
+        # Section 3: Place of Birth
+        # Husband
         self.ent_h_pob_city = tk.Entry(self.root, width=15); self.apply_style(self.ent_h_pob_city); self.canvas.create_window(205, 228, window=self.ent_h_pob_city)
         self.ent_h_pob_prov = tk.Entry(self.root, width=15); self.apply_style(self.ent_h_pob_prov); self.canvas.create_window(315, 228, window=self.ent_h_pob_prov)
         self.ent_h_pob_ctry = tk.Entry(self.root, width=10); self.apply_style(self.ent_h_pob_ctry); self.canvas.create_window(410, 228, window=self.ent_h_pob_ctry)
+        # Wife
         self.ent_w_pob_city = tk.Entry(self.root, width=15); self.apply_style(self.ent_w_pob_city); self.canvas.create_window(505, 228, window=self.ent_w_pob_city)
         self.ent_w_pob_prov = tk.Entry(self.root, width=15); self.apply_style(self.ent_w_pob_prov); self.canvas.create_window(615, 228, window=self.ent_w_pob_prov)
         self.ent_w_pob_ctry = tk.Entry(self.root, width=10); self.apply_style(self.ent_w_pob_ctry); self.canvas.create_window(710, 228, window=self.ent_w_pob_ctry)
+        
+        # Section 4: Sex & Citizenship
+        # Husband
         self.ent_h_sex = tk.Entry(self.root, width=10); self.apply_style(self.ent_h_sex); self.canvas.create_window(200, 254, window=self.ent_h_sex)
         self.ent_h_citizen = tk.Entry(self.root, width=20); self.apply_style(self.ent_h_citizen); self.canvas.create_window(330, 255, window=self.ent_h_citizen)
+        # Wife
         self.ent_w_sex = tk.Entry(self.root, width=10); self.apply_style(self.ent_w_sex); self.canvas.create_window(500, 255, window=self.ent_w_sex)
         self.ent_w_citizen = tk.Entry(self.root, width=20); self.apply_style(self.ent_w_citizen); self.canvas.create_window(625, 257, window=self.ent_w_citizen)
+        
+        # Section 5: Residence
+        # Husband
         self.ent_h_res = tk.Entry(self.root, width=45); self.apply_style(self.ent_h_res); self.canvas.create_window(295, 287, window=self.ent_h_res)
+        # Wife
         self.ent_w_res = tk.Entry(self.root, width=45); self.apply_style(self.ent_w_res); self.canvas.create_window(595, 288, window=self.ent_w_res)
+        
+        # Section 6: Religion
+        # Husband
         self.ent_h_rel = tk.Entry(self.root, width=35); self.apply_style(self.ent_h_rel); self.canvas.create_window(265, 310, window=self.ent_h_rel)
+        # Wife
         self.ent_w_rel = tk.Entry(self.root, width=35); self.apply_style(self.ent_w_rel); self.canvas.create_window(565, 310, window=self.ent_w_rel)
+        
+        # Section 7: Civil Status
+        # Husband
         self.ent_h_status = tk.Entry(self.root, width=35); self.apply_style(self.ent_h_status); self.canvas.create_window(265, 333, window=self.ent_h_status)
+        # Wife
         self.ent_w_status = tk.Entry(self.root, width=35); self.apply_style(self.ent_w_status); self.canvas.create_window(565, 335, window=self.ent_w_status)
+        
+        # Section 8: Name of Father
+        # Husband
         self.ent_hf_first = tk.Entry(self.root, width=15); self.apply_style(self.ent_hf_first); self.canvas.create_window(210, 361, window=self.ent_hf_first)
         self.ent_hf_mid = tk.Entry(self.root, width=15); self.apply_style(self.ent_hf_mid); self.canvas.create_window(305, 361, window=self.ent_hf_mid)
         self.ent_hf_last = tk.Entry(self.root, width=15); self.apply_style(self.ent_hf_last); self.canvas.create_window(400, 361, window=self.ent_hf_last)
+        # Wife
         self.ent_wf_first = tk.Entry(self.root, width=15); self.apply_style(self.ent_wf_first); self.canvas.create_window(508, 363, window=self.ent_wf_first)
         self.ent_wf_mid = tk.Entry(self.root, width=15); self.apply_style(self.ent_wf_mid); self.canvas.create_window(603, 363, window=self.ent_wf_mid)
         self.ent_wf_last = tk.Entry(self.root, width=15); self.apply_style(self.ent_wf_last); self.canvas.create_window(698, 363, window=self.ent_wf_last)
+        
+        # Section 9: Citizenship
+        # Husband
         self.ent_hf_citizen = tk.Entry(self.root, width=30); self.apply_style(self.ent_hf_citizen); self.canvas.create_window(305, 384, window=self.ent_hf_citizen)
+        # Wife
         self.ent_wf_citizen = tk.Entry(self.root, width=30); self.apply_style(self.ent_wf_citizen); self.canvas.create_window(605, 386, window=self.ent_wf_citizen)
+        
+        # Section 10: Maiden Name of Mother
+        # Husband
         self.ent_hm_first = tk.Entry(self.root, width=15); self.apply_style(self.ent_hm_first); self.canvas.create_window(210, 414, window=self.ent_hm_first)
         self.ent_hm_mid = tk.Entry(self.root, width=15); self.apply_style(self.ent_hm_mid); self.canvas.create_window(305, 414, window=self.ent_hm_mid)
         self.ent_hm_last = tk.Entry(self.root, width=15); self.apply_style(self.ent_hm_last); self.canvas.create_window(400, 414, window=self.ent_hm_last)
+        # Wife
         self.ent_wm_first = tk.Entry(self.root, width=15); self.apply_style(self.ent_wm_first); self.canvas.create_window(508, 416, window=self.ent_wm_first)
         self.ent_wm_mid = tk.Entry(self.root, width=15); self.apply_style(self.ent_wm_mid); self.canvas.create_window(603, 416, window=self.ent_wm_mid)
         self.ent_wm_last = tk.Entry(self.root, width=15); self.apply_style(self.ent_wm_last); self.canvas.create_window(698, 416, window=self.ent_wm_last)
+        
+        # Section 11: Citizenship
+        # Husband
         self.ent_hm_citizen = tk.Entry(self.root, width=30); self.apply_style(self.ent_hm_citizen); self.canvas.create_window(305, 439, window=self.ent_hm_citizen)
+        # Wife
         self.ent_wm_citizen = tk.Entry(self.root, width=30); self.apply_style(self.ent_wm_citizen); self.canvas.create_window(605, 440, window=self.ent_wm_citizen)
+        
+        # Section 12: Person Who Give Consent
+        # Husband
         self.ent_h_c_first = tk.Entry(self.root, width=15); self.apply_style(self.ent_h_c_first); self.canvas.create_window(210, 470, window=self.ent_h_c_first)
         self.ent_h_c_mid = tk.Entry(self.root, width=15); self.apply_style(self.ent_h_c_mid); self.canvas.create_window(305, 470, window=self.ent_h_c_mid)
         self.ent_h_c_last = tk.Entry(self.root, width=15); self.apply_style(self.ent_h_c_last); self.canvas.create_window(400, 470, window=self.ent_h_c_last)
+        # Wife
         self.ent_w_c_first = tk.Entry(self.root, width=15); self.apply_style(self.ent_w_c_first); self.canvas.create_window(508, 471, window=self.ent_w_c_first)
         self.ent_w_c_mid = tk.Entry(self.root, width=15); self.apply_style(self.ent_w_c_mid); self.canvas.create_window(603, 471, window=self.ent_w_c_mid)
         self.ent_w_c_last = tk.Entry(self.root, width=15); self.apply_style(self.ent_w_c_last); self.canvas.create_window(698, 471, window=self.ent_w_c_last)
+        
+        # Section 13: Relationship
+        # Husband
         self.ent_h_c_rel = tk.Entry(self.root, width=30); self.apply_style(self.ent_h_c_rel); self.canvas.create_window(305, 491, window=self.ent_h_c_rel)
+        # Wife
         self.ent_w_c_rel = tk.Entry(self.root, width=30); self.apply_style(self.ent_w_c_rel); self.canvas.create_window(605, 492, window=self.ent_w_c_rel)
+        
+        # Section 14: Residence
+        # Husband
         self.ent_h_c_res = tk.Entry(self.root, width=45); self.apply_style(self.ent_h_c_res); self.canvas.create_window(305, 521, window=self.ent_h_c_res)
+        # Wife
         self.ent_w_c_res = tk.Entry(self.root, width=45); self.apply_style(self.ent_w_c_res); self.canvas.create_window(605, 522, window=self.ent_w_c_res)
+        
+        # Section 15: Place of Marriage
         self.ent_pom_office = tk.Entry(self.root, width=40); self.apply_style(self.ent_pom_office); self.canvas.create_window(310, 541, window=self.ent_pom_office)
         self.ent_pom_city = tk.Entry(self.root, width=18); self.apply_style(self.ent_pom_city); self.canvas.create_window(510, 541, window=self.ent_pom_city)
         self.ent_pom_prov = tk.Entry(root, width=18); self.apply_style(self.ent_pom_prov); self.canvas.create_window(660, 541, window=self.ent_pom_prov)
-        self.ent_dom_day = tk.Entry(root, width=5); self.apply_style(self.ent_dom_day); self.canvas.create_window(230, 570, window=self.ent_dom_day)
-        self.ent_dom_month = tk.Entry(root, width=12); self.apply_style(self.ent_dom_month); self.canvas.create_window(295, 570, window=self.ent_dom_month)
-        self.ent_dom_year = tk.Entry(root, width=8); self.apply_style(self.ent_dom_year); self.canvas.create_window(375, 570, window=self.ent_dom_year)
-        self.ent_tom = tk.Entry(root, width=15); self.apply_style(self.ent_tom); self.canvas.create_window(630, 570, window=self.ent_tom)
-        self.ent_s18_hname = tk.Entry(root, width=35); self.apply_style(self.ent_s18_hname); self.canvas.create_window(365, 610, window=self.ent_s18_hname)
-        self.ent_s18_wname = tk.Entry(root, width=35); self.apply_style(self.ent_s18_wname); self.canvas.create_window(600, 610, window=self.ent_s18_wname)
-        self.chk_entered = tk.Checkbutton(root, variable=self.settlement_var, onvalue=1, offvalue=0, bg="#ADD8E6"); self.canvas.create_window(304, 639, window=self.chk_entered)
-        self.chk_not_entered = tk.Checkbutton(root, variable=self.settlement_var, onvalue=2, offvalue=0, bg="#ADD8E6"); self.canvas.create_window(544, 639, window=self.chk_not_entered)
-        self.ent_s18_sig_day = tk.Entry(root, width=5); self.apply_style(self.ent_s18_sig_day); self.canvas.create_window(590, 650, window=self.ent_s18_sig_day)
-        self.ent_s18_sig_month = tk.Entry(root, width=15); self.apply_style(self.ent_s18_sig_month); self.canvas.create_window(690, 650, window=self.ent_s18_sig_month)
-        self.chk_lic_a = tk.Checkbutton(root, variable=self.license_type_var, onvalue=1, offvalue=0, bg="#ADD8E6"); self.canvas.create_window(85, 737, window=self.chk_lic_a)
-        self.ent_lic_no = tk.Entry(root, width=23); self.apply_style(self.ent_lic_no); self.canvas.create_window(280, 739, window=self.ent_lic_no)
-        self.ent_lic_issued_on = tk.Entry(root, width=23); self.apply_style(self.ent_lic_issued_on); self.canvas.create_window(470, 739, window=self.ent_lic_issued_on)
-        self.ent_lic_issued_at = tk.Entry(root, width=28); self.apply_style(self.ent_lic_issued_at); self.canvas.create_window(650, 739, window=self.ent_lic_issued_at)
-        self.chk_lic_b = tk.Checkbutton(root, variable=self.license_type_var, onvalue=2, offvalue=0, bg="#ADD8E6"); self.canvas.create_window(85, 761, window=self.chk_lic_b)
-        self.ent_lic_art = tk.Entry(root, width=5); self.apply_style(self.ent_lic_art); self.canvas.create_window(475, 760, window=self.ent_lic_art)
-        self.chk_lic_c = tk.Checkbutton(root, variable=self.license_type_var, onvalue=3, offvalue=0, bg="#ADD8E6"); self.canvas.create_window(85, 783, window=self.chk_lic_c)
-        self.ent_off_name = tk.Entry(root, width=35); self.apply_style(self.ent_off_name); self.canvas.create_window(188, 805, window=self.ent_off_name)
-        self.ent_off_pos = tk.Entry(root, width=25); self.apply_style(self.ent_off_pos); self.canvas.create_window(405, 805, window=self.ent_off_pos)
-        self.ent_if_app = tk.Entry(root, width=35); self.apply_style(self.ent_if_app); self.canvas.create_window(620, 805, window=self.ent_if_app)
-        self.ent_wit1 = tk.Entry(root, width=25); self.apply_style(self.ent_wit1); self.canvas.create_window(155, 865, window=self.ent_wit1)
-        self.ent_wit2 = tk.Entry(root, width=25); self.apply_style(self.ent_wit2); self.canvas.create_window(665, 865, window=self.ent_wit2)
-        self.ent_wit3 = tk.Entry(root, width=25); self.apply_style(self.ent_wit3); self.canvas.create_window(328, 865, window=self.ent_wit3)
-        self.ent_wit4 = tk.Entry(root, width=25); self.apply_style(self.ent_wit4); self.canvas.create_window(500, 865, window=self.ent_wit4)
+        
+        # Section 16: Date of Marriage
+        self.ent_dom_day = tk.Entry(self.root, width=5); self.apply_style(self.ent_dom_day); self.canvas.create_window(230, 570, window=self.ent_dom_day)
+        self.ent_dom_month = tk.Entry(self.root, width=12); self.apply_style(self.ent_dom_month); self.canvas.create_window(295, 570, window=self.ent_dom_month)
+        self.ent_dom_year = tk.Entry(self.root, width=8); self.apply_style(self.ent_dom_year); self.canvas.create_window(375, 570, window=self.ent_dom_year)
+        
+        # Section 17: Time of Marriage
+        self.ent_tom = tk.Entry(self.root, width=15); self.apply_style(self.ent_tom); self.canvas.create_window(630, 570, window=self.ent_tom)
+        
+        # Section 18: Certification of Contracting Person
+        self.ent_s18_hname = tk.Entry(self.root, width=35); self.apply_style(self.ent_s18_hname); self.canvas.create_window(365, 610, window=self.ent_s18_hname)
+        self.ent_s18_wname = tk.Entry(self.root, width=35); self.apply_style(self.ent_s18_wname); self.canvas.create_window(600, 610, window=self.ent_s18_wname)
+        self.chk_entered = tk.Checkbutton(self.root, variable=self.settlement_var, onvalue=1, offvalue=0, bg="#ADD8E6"); self.canvas.create_window(304, 639, window=self.chk_entered)
+        self.chk_not_entered = tk.Checkbutton(self.root, variable=self.settlement_var, onvalue=2, offvalue=0, bg="#ADD8E6"); self.canvas.create_window(544, 639, window=self.chk_not_entered)
+        self.ent_s18_sig_day = tk.Entry(self.root, width=5); self.apply_style(self.ent_s18_sig_day); self.canvas.create_window(590, 650, window=self.ent_s18_sig_day)
+        self.ent_s18_sig_month = tk.Entry(self.root, width=15); self.apply_style(self.ent_s18_sig_month); self.canvas.create_window(690, 650, window=self.ent_s18_sig_month)
+        
+        # Section 19: Certification of the Solemnizing Officer
+        self.chk_lic_a = tk.Checkbutton(self.root, variable=self.license_type_var, onvalue=1, offvalue=0, bg="#ADD8E6"); self.canvas.create_window(85, 737, window=self.chk_lic_a)
+        self.ent_lic_no = tk.Entry(self.root, width=23); self.apply_style(self.ent_lic_no); self.canvas.create_window(280, 739, window=self.ent_lic_no)
+        self.ent_lic_issued_on = tk.Entry(self.root, width=23); self.apply_style(self.ent_lic_issued_on); self.canvas.create_window(470, 739, window=self.ent_lic_issued_on)
+        self.ent_lic_issued_at = tk.Entry(self.root, width=28); self.apply_style(self.ent_lic_issued_at); self.canvas.create_window(650, 739, window=self.ent_lic_issued_at)
+        self.chk_lic_b = tk.Checkbutton(self.root, variable=self.license_type_var, onvalue=2, offvalue=0, bg="#ADD8E6"); self.canvas.create_window(85, 761, window=self.chk_lic_b)
+        self.ent_lic_art = tk.Entry(self.root, width=5); self.apply_style(self.ent_lic_art); self.canvas.create_window(475, 760, window=self.ent_lic_art)
+        self.chk_lic_c = tk.Checkbutton(self.root, variable=self.license_type_var, onvalue=3, offvalue=0, bg="#ADD8E6"); self.canvas.create_window(85, 783, window=self.chk_lic_c)
+        self.ent_off_name = tk.Entry(self.root, width=35); self.apply_style(self.ent_off_name); self.canvas.create_window(188, 805, window=self.ent_off_name)
+        self.ent_off_pos = tk.Entry(self.root, width=25); self.apply_style(self.ent_off_pos); self.canvas.create_window(405, 805, window=self.ent_off_pos)
+        self.ent_if_app = tk.Entry(self.root, width=35); self.apply_style(self.ent_if_app); self.canvas.create_window(620, 805, window=self.ent_if_app)
+        
+        # Section 20: Witnesses
+        self.ent_wit1 = tk.Entry(self.root, width=25); self.apply_style(self.ent_wit1); self.canvas.create_window(155, 865, window=self.ent_wit1)
+        self.ent_wit2 = tk.Entry(self.root, width=25); self.apply_style(self.ent_wit2); self.canvas.create_window(665, 865, window=self.ent_wit2)
+        self.ent_wit3 = tk.Entry(self.root, width=25); self.apply_style(self.ent_wit3); self.canvas.create_window(328, 865, window=self.ent_wit3)
+        self.ent_wit4 = tk.Entry(self.root, width=25); self.apply_style(self.ent_wit4); self.canvas.create_window(500, 865, window=self.ent_wit4)
 
-        # --- PAGE 1 PRINT BUTTON ---
+        # PAGE 1 PRINT BUTTON
         self.btn_print_p1 = tk.Button(self.root, text="PRINT PAGE 1 ONLY", bg="#27ae60", fg="white", 
                                      font=("Arial", 11, "bold"), command=self.print_pdf_p1)
         self.canvas.create_window(400, 1200, window=self.btn_print_p1)
@@ -172,49 +242,43 @@ class MarriageApp:
         except FileNotFoundError:
             self.canvas.create_text(400, 200, text="Please upload form_page2.png", font=("Arial", 14))
 
-        # --- NEW SECTION 20b: WITNESSES (Back Page) ---
-        self.ent_p2_wit1 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit1)
-        self.canvas.create_window(124, 65, window=self.ent_p2_wit1)
-        self.ent_p2_wit2 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit2)
-        self.canvas.create_window(290, 65, window=self.ent_p2_wit2)
-        self.ent_p2_wit3 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit3)
-        self.canvas.create_window(469, 65, window=self.ent_p2_wit3)
-        self.ent_p2_wit4 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit4)
-        self.canvas.create_window(636, 65, window=self.ent_p2_wit4)
+        # --- PAGE 2 WITNESSES ---
+        self.ent_p2_wit1 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit1); self.canvas.create_window(124, 65, window=self.ent_p2_wit1)
+        self.ent_p2_wit2 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit2); self.canvas.create_window(290, 65, window=self.ent_p2_wit2)
+        self.ent_p2_wit3 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit3); self.canvas.create_window(469, 65, window=self.ent_p2_wit3)
+        self.ent_p2_wit4 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit4); self.canvas.create_window(636, 65, window=self.ent_p2_wit4)
+        self.ent_p2_wit5 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit5); self.canvas.create_window(124, 100, window=self.ent_p2_wit5)
+        self.ent_p2_wit6 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit6); self.canvas.create_window(290, 100, window=self.ent_p2_wit6)
+        self.ent_p2_wit7 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit7); self.canvas.create_window(469, 100, window=self.ent_p2_wit7)
+        self.ent_p2_wit8 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit8); self.canvas.create_window(636, 100, window=self.ent_p2_wit8)
 
-        self.ent_p2_wit5 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit5)
-        self.canvas.create_window(124, 100, window=self.ent_p2_wit5)
-        self.ent_p2_wit6 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit6)
-        self.canvas.create_window(290, 100, window=self.ent_p2_wit6)
-        self.ent_p2_wit7 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit7)
-        self.canvas.create_window(469, 100, window=self.ent_p2_wit7)
-        self.ent_p2_wit8 = tk.Entry(self.root, width=25); self.apply_style(self.ent_p2_wit8)
-        self.canvas.create_window(636, 100, window=self.ent_p2_wit8)
+        # --- PAGE 2 AFFIDAVIT (Restored and Fixed) ---
+        self.ent_aff_name = tk.Entry(self.root, width=40); self.apply_style(self.ent_aff_name)
+        self.canvas.create_window(235, 385, window=self.ent_aff_name)
+        
+        self.ent_aff_office = tk.Entry(self.root, width=35); self.apply_style(self.ent_aff_office)
+        self.canvas.create_window(700, 385, window=self.ent_aff_office)
+        
+        self.ent_aff_address = tk.Entry(self.root, width=45); self.apply_style(self.ent_aff_address)
+        self.canvas.create_window(240, 420, window=self.ent_aff_address)
+        
+        self.ent_aff_husband = tk.Entry(self.root, width=35); self.apply_style(self.ent_aff_husband)
+        self.canvas.create_window(460, 465, window=self.ent_aff_husband)
+        
+        self.ent_aff_wife = tk.Entry(self.root, width=35); self.apply_style(self.ent_aff_wife)
+        self.canvas.create_window(720, 465, window=self.ent_aff_wife)
 
-        # # --- AFFIDAVIT OF SOLEMNIZING OFFICER ---
-        # self.ent_aff_name = tk.Entry(self.root, width=40); self.apply_style(self.ent_aff_name)
-        # self.canvas.create_window(235, 385, window=self.ent_aff_name)
-        # self.ent_aff_office = tk.Entry(self.root, width=35); self.apply_style(self.ent_aff_office)
-        # self.canvas.create_window(700, 385, window=self.ent_aff_office)
-        # self.ent_aff_address = tk.Entry(self.root, width=45); self.apply_style(self.ent_aff_address)
-        # self.canvas.create_window(240, 420, window=self.ent_aff_address)
-        # self.ent_aff_husband = tk.Entry(self.root, width=35); self.apply_style(self.ent_aff_husband)
-        # self.canvas.create_window(460, 465, window=self.ent_aff_husband)
-        # self.ent_aff_wife = tk.Entry(self.root, width=35); self.apply_style(self.ent_aff_wife)
-        # self.canvas.create_window(720, 465, window=self.ent_aff_wife)
+        # Checkboxes
+        self.chk_a = tk.Checkbutton(self.root, variable=self.affidavit_lic_var, onvalue=1, bg="#ADD8E6"); self.canvas.create_window(105, 500, window=self.chk_a)
+        self.chk_b = tk.Checkbutton(self.root, variable=self.affidavit_lic_var, onvalue=2, bg="#ADD8E6"); self.canvas.create_window(105, 542, window=self.chk_b)
+        self.chk_c = tk.Checkbutton(self.root, variable=self.affidavit_lic_var, onvalue=3, bg="#ADD8E6"); self.canvas.create_window(105, 580, window=self.chk_c)
+        self.chk_d = tk.Checkbutton(self.root, variable=self.affidavit_lic_var, onvalue=4, bg="#ADD8E6"); self.canvas.create_window(105, 655, window=self.chk_d)
+        self.chk_e = tk.Checkbutton(self.root, variable=self.affidavit_lic_var, onvalue=5, bg="#ADD8E6"); self.canvas.create_window(105, 695, window=self.chk_e)
 
-        # # Checkboxes (a through e)
-        # self.chk_a = tk.Checkbutton(self.root, variable=self.affidavit_lic_var, onvalue=1, bg="#ADD8E6"); self.canvas.create_window(105, 500, window=self.chk_a)
-        # self.chk_b = tk.Checkbutton(self.root, variable=self.affidavit_lic_var, onvalue=2, bg="#ADD8E6"); self.canvas.create_window(105, 542, window=self.chk_b)
-        # self.chk_c = tk.Checkbutton(self.root, variable=self.affidavit_lic_var, onvalue=3, bg="#ADD8E6"); self.canvas.create_window(105, 580, window=self.chk_c)
-        # self.chk_d = tk.Checkbutton(self.root, variable=self.affidavit_lic_var, onvalue=4, bg="#ADD8E6"); self.canvas.create_window(105, 655, window=self.chk_d)
-        # self.chk_e = tk.Checkbutton(self.root, variable=self.affidavit_lic_var, onvalue=5, bg="#ADD8E6"); self.canvas.create_window(105, 695, window=self.chk_e)
+        self.ent_aff_sig_day = tk.Entry(self.root, width=5); self.apply_style(self.ent_aff_sig_day); self.canvas.create_window(550, 855, window=self.ent_aff_sig_day)
+        self.ent_aff_sig_place = tk.Entry(self.root, width=30); self.apply_style(self.ent_aff_sig_place); self.canvas.create_window(260, 885, window=self.ent_aff_sig_place)
 
-        # # Footer Date/Place
-        # self.ent_aff_sig_day = tk.Entry(self.root, width=5); self.apply_style(self.ent_aff_sig_day); self.canvas.create_window(550, 855, window=self.ent_aff_sig_day)
-        # self.ent_aff_sig_place = tk.Entry(self.root, width=30); self.apply_style(self.ent_aff_sig_place); self.canvas.create_window(260, 885, window=self.ent_aff_sig_place)
-
-        # --- PAGE 2 PRINT BUTTON ---
+        # PAGE 2 PRINT BUTTON
         self.btn_print_p2 = tk.Button(self.root, text="PRINT PAGE 2 ONLY", bg="#e67e22", fg="white", 
                                      font=("Arial", 11, "bold"), command=self.print_pdf_p2)
         self.canvas.create_window(400, 1200, window=self.btn_print_p2)
@@ -230,53 +294,137 @@ class MarriageApp:
                                           font=("Arial", 7, "bold"), bd=1,
                                           command=lambda: self.toggle_field_state(widget))
         for item in self.canvas.find_all():
-            if self.canvas.type(item) == "window":
-                if self.canvas.itemcget(item, "window") == str(widget):
-                    x, y = self.canvas.coords(item)
-                    width = widget.winfo_width() / 2
-                    self.active_check_window = self.canvas.create_window(x + width + 15, y, window=self.active_check_btn_ui)
-                    break
+            if self.canvas.type(item) == "window" and self.canvas.itemcget(item, "window") == str(widget):
+                x, y = self.canvas.coords(item)
+                self.active_check_window = self.canvas.create_window(x + (widget.winfo_width() / 2) + 15, y, window=self.active_check_btn_ui)
+                break
 
     def toggle_field_state(self, widget):
-        if not widget.is_locked:
-            widget.config(bg="white", highlightthickness=0)
-            widget.is_locked = True
-        else:
-            widget.config(bg="#ADD8E6", highlightthickness=1)
-            widget.is_locked = False
+        widget.config(bg="white" if not widget.is_locked else "#ADD8E6", highlightthickness=0 if not widget.is_locked else 1)
+        widget.is_locked = not widget.is_locked
         self.position_check_icon(widget)
 
     # --- PRINT LOGIC ---
+    # PAGE 1
     def print_pdf_p1(self):
         lic_type = {1: 'a', 2: 'b', 3: 'c'}.get(self.license_type_var.get(), '')
         data = {
             'page': 1,
             'province': self.ent_prov.get().upper(),
-            'license_type': lic_type,
+            'city_municipality': self.ent_city.get().upper(),
+
+            
+            # Husband Data
+            'h_first': self.ent_h_first.get().upper(),
+            'h_middle': self.ent_h_mid.get().upper(),
+            'h_last': self.ent_h_last.get().upper(),
+            # DOB
+            'h_day': self.ent_h_day.get(),
+            'h_month': self.ent_h_month.get().upper(),
+            'h_year': self.ent_h_year.get(),
+            'h_age': self.ent_h_age.get(),
+            # POB
+            'h_pob_city': self.ent_h_pob_city.get().upper(),
+            'h_pob_prov': self.ent_h_pob_prov.get().upper(),
+            'h_pob_ctry': self.ent_h_pob_ctry.get().upper(),
+            # Sex and Citizenship
+            'h_sex': self.ent_h_sex.get().upper(),
+            'h_citizen': self.ent_h_citizen.get().upper(),
+            # Residence
+            'h_res': self.ent_h_res.get().upper(),
+            # Religion
+            'h_rel': self.ent_h_rel.get().upper(),
+            # Civil Status
+            'h_status': self.ent_h_status.get().upper(),
+            # Husband Father
+            'hf_first': self.ent_hf_first.get().upper(),
+            'hf_mid': self.ent_hf_mid.get().upper(),
+            'hf_last': self.ent_hf_last.get().upper(),
+            # Husband Father Citizenship
+            'hf_citizen': self.ent_hf_citizen.get().upper(),
+
+            # Wife Data
+            'w_first': self.ent_w_first.get().upper(),
+            'w_middle': self.ent_w_mid.get().upper(),
+            'w_last': self.ent_w_last.get().upper(),
+            # POB
+            'w_pob_city': self.ent_h_pob_city.get().upper(),
+            'w_pob_prov': self.ent_h_pob_prov.get().upper(),
+            'w_pob_ctry': self.ent_h_pob_ctry.get().upper(),
+            # DOB
+            'w_day': self.ent_w_day.get(),
+            'w_month': self.ent_w_month.get().upper(),
+            'w_year': self.ent_w_year.get(),
+            'w_age': self.ent_w_age.get(),
+            # Sex and Citizenship
+            'w_sex': self.ent_w_sex.get().upper(),
+            'w_citizen': self.ent_w_citizen.get().upper(),
+            # Residence
+            'w_res': self.ent_h_res.get().upper(),
+            # Religion
+            'w_rel': self.ent_h_rel.get().upper(),
+            # Civil Status
+            'w_status': self.ent_h_status.get().upper(),
+            # Wife Father
+            'wf_first': self.ent_wf_first.get().upper(),
+            'wf_mid': self.ent_wf_mid.get().upper(),
+            'wf_last': self.ent_wf_last.get().upper(),
+            # Wife Father Citizenship
+            'wf_citizen': self.ent_wf_citizen.get().upper(),
+
+            # Certification / Section 18
+            'h_full_name': f"{self.ent_h_first.get()} {self.ent_h_mid.get()} {self.ent_h_last.get()}".upper(),
+            'w_full_name': f"{self.ent_w_first.get()} {self.ent_w_mid.get()} {self.ent_w_last.get()}".upper(),
             'sec18_entered': self.settlement_var.get() == 1,
-            'show_template': False 
+            # License / Section 19
+            'license_type': lic_type,
+            'license_no': self.ent_lic_no.get().upper(),
+            'issued_on': self.ent_lic_issued_on.get().upper(),
+            'issued_at': self.ent_lic_issued_at.get().upper(),
+            # Witnesses
+            'witnesses': [self.ent_wit1.get(), self.ent_wit2.get(), self.ent_wit3.get(), self.ent_wit4.get()]
         }
         self.execute_print(data, "Marriage_Page1.pdf")
 
+    # PAGE 2
     def print_pdf_p2(self):
         aff_type = {1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e'}.get(self.affidavit_lic_var.get(), '')
         data = {
-            'page': 2,
-            'aff_officer': self.ent_aff_name.get().upper(),
-            'aff_type': aff_type,
-            'show_template': False 
+            'page': 2, 'aff_officer': self.ent_aff_name.get().upper(),
+            'aff_office': self.ent_aff_office.get().upper(), 'aff_type': aff_type
         }
         self.execute_print(data, "Marriage_Page2.pdf")
 
     def execute_print(self, data, filename):
         if generate_full_certificate:
             try:
+                # 1. Generate the PDF
                 generate_full_certificate(filename, data, show_template=False)
-                messagebox.showinfo("Success", f"Generated {filename} successfully!")
+                
+                if os.path.exists(filename):
+                    import win32print
+                    import win32api
+                    
+                    abs_path = os.path.abspath(filename)
+                    printer_name = win32print.GetDefaultPrinter()
+                    
+                    # Instead of 'print' which opens apps, we use 'printto'
+                    # aimed at the specific default printer driver.
+                    try:
+                        # 0 = SW_HIDE (No window)
+                        win32api.ShellExecute(0, "printto", abs_path, f'"{printer_name}"', ".", 0)
+                        messagebox.showinfo("Success", f"Data sent to {printer_name} tray.")
+                    except Exception:
+                        # If Windows still blocks silent printing, we open it 
+                        # so you can just hit 'Print' and 'Enter'
+                        messagebox.showwarning("System Restriction", "Windows blocked silent print. Opening file...")
+                        os.startfile(abs_path)
+                else:
+                    messagebox.showerror("Error", "PDF file not found.")
             except Exception as e:
-                messagebox.showerror("Error", str(e))
+                messagebox.showerror("Error", f"Execution failed: {str(e)}")
         else:
-            messagebox.showerror("Error", "PDF generator module not found.")
+            messagebox.showerror("Error", "PDF module missing.")
 
 if __name__ == "__main__":
     root = tk.Tk()
