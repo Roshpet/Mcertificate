@@ -23,81 +23,132 @@ def generate_full_certificate(output_file, data, show_template=False):
     # --- PAGE 1 LOGIC ---
     if data.get('page', 1) == 1:
         # Header
-        draw(data.get('province', ''), 52, 29)
-        draw(data.get('city_municipality', ''), 52, 34)
+        draw(data.get('province', ''), 40, 15)
+        draw(data.get('city_municipality', ''), 52, 20)
         draw(data.get('registry_no', ''), 165, 30, size=10, bold=True)
 
         # Section 1: Names (Husband & Wife)
-        draw(data.get('h_first', ''), 65, 43)
-        draw(data.get('h_middle', ''), 65, 48)
-        draw(data.get('h_last', ''), 65, 53)
-        draw(data.get('w_first', ''), 145, 43)
-        draw(data.get('w_middle', ''), 145, 48)
-        draw(data.get('w_last', ''), 145, 53)
+        draw(data.get('h_first', ''), 60, 29)
+        draw(data.get('h_middle', ''), 60, 33)
+        draw(data.get('h_last', ''), 60, 38)
+        draw(data.get('w_first', ''), 140, 29)
+        draw(data.get('w_middle', ''), 140, 33)
+        draw(data.get('w_last', ''), 140, 38)
 
         # Section 2: Date of Birth & Age
         # Husband
-        draw(data.get('h_day', ''), 54, 62)
-        draw(data.get('h_month', ''), 75, 62)
-        draw(data.get('h_year', ''), 103, 62)
-        draw(data.get('h_age', ''), 130, 62)
+        draw(data.get('h_day', ''), 49, 47)
+        draw(data.get('h_month', ''), 68, 47)
+        draw(data.get('h_year', ''), 91, 47)
+        draw(data.get('h_age', ''), 117, 47)
         # Wife
-        draw(data.get('w_day', ''), 138, 62)
-        draw(data.get('w_month', ''), 155, 62)
-        draw(data.get('w_year', ''), 180, 62)
-        draw(data.get('w_age', ''), 203, 62)
+        draw(data.get('w_day', ''), 132, 47)
+        draw(data.get('w_month', ''), 152, 47)
+        draw(data.get('w_year', ''), 172, 47)
+        draw(data.get('w_age', ''), 199, 47)
 
         #SECTION 3: PLACE OF BIRTH
         #HUSBAND
-        draw(data.get('h_pob_city', ''), 55 ,70)
-        draw(data.get('h_pob_prov', ''), 70, 70)
-        draw(data.get('h_pob_ctry', ''), 100, 70)
+        draw(data.get('h_pob_city', ''), 43 ,57)
+        draw(data.get('h_pob_prov', ''), 68, 57)
+        draw(data.get('h_pob_ctry', ''), 103, 57)
         #Wife
-        draw(data.get('w_pob_city', ''), 140, 70)
-        draw(data.get('w_pob_prov', ''), 160, 70)
-        draw(data.get('w_pob_ctry', ''), 180, 70)
+        draw(data.get('w_pob_city', ''), 129, 57)
+        draw(data.get('w_pob_prov', ''), 154, 57)
+        draw(data.get('w_pob_ctry', ''), 183, 57)
 
         # Section 4: Sex & Citizenship
         # Husband
-        draw(data.get('h_sex', ''), 55, 78)
-        draw(data.get('h_citizen', ''), 95, 78)
+        draw(data.get('h_sex', ''), 55, 65)
+        draw(data.get('h_citizen', ''), 95, 65)
         # Wife
-        draw(data.get('w_sex', ''), 140, 78)
-        draw(data.get('w_citizen', ''), 175, 78)
+        draw(data.get('w_sex', ''), 140, 65)
+        draw(data.get('w_citizen', ''), 175, 65)
 
         # Section 5: Residence
         # Husband
-        draw(data.get('h_res', ''), 55, 82)
+        draw(data.get('h_res', ''), 55, 75)
         # Wife
-        draw(data.get('w_res', ''), 140, 82)
+        draw(data.get('w_res', ''), 140, 75)
 
 
-        # Section 6: Relationship
+        # Section 6: Religion
         # Husband
-        draw(data.get('h_rel', ''), 55, 89)
-        draw(data.get('w_rel', ''), 140, 89)
+        draw(data.get('h_rel', ''), 55, 84)
+        draw(data.get('w_rel', ''), 140, 84)
 
         # Section 7: Civil Status
         # Husband
-        draw(data.get('h_status', ''), 55, 93)
+        draw(data.get('h_status', ''), 55, 89)
         # Wife
-        draw(data.get('w_status', ''), 140, 93)
+        draw(data.get('w_status', ''), 140, 89)
 
         # Section 8: Name Of Father
         # Husband
-        draw(data.get('hf_first', ''), 55, 99)
-        draw(data.get('hf_mid', ''), 65, 99)
-        draw(data.get('hf_last', ''), 75, 99)
+        draw(data.get('hf_first', ''), 45, 99)
+        draw(data.get('hf_mid', ''), 70, 99)
+        draw(data.get('hf_last', ''), 82, 99)
         # Wife
-        draw(data.get('wf_first', ''), 140, 99)
-        draw(data.get('wf_first', ''), 145, 99)
-        draw(data.get('wf_last', ''), 155, 99)
+        draw(data.get('wf_first', ''), 130, 99)
+        draw(data.get('wf_first', ''), 155, 99)
+        draw(data.get('wf_last', ''), 165, 99)
 
         # Section 9: Father Citizenship
         # Husband
         draw(data.get('hf_citizen', ''), 55, 105)
         # Wife
         draw(data.get('wf_citizen', ''), 140, 105)
+
+        # Section 10: Maiden Name of Mother
+        # Husband
+        draw(data.get('hm_first', ''), 55, 110)
+        draw(data.get('hm_mid', ''), 65, 110)
+        draw(data.get('hm_last', ''), 75, 110)
+        # Wife
+        draw(data.get('wm_first', ''), 140, 110)
+        draw(data.get('wm_mid', ''), 145, 110)
+        draw(data.get('wm_last', ''), 155, 110)
+
+        # Section 11: Mother Citizenship
+        # Husband
+        draw(data.get('hm_citizen', ''), 55, 115)
+        # Wife
+        draw(data.get('wm_citizen', ''), 140, 115)
+
+        # Section 12: Person Who Give Consent
+        # Husband
+        draw(data.get('h_c_first', ''), 55, 120)
+        draw(data.get('h_c_mid', ''), 65, 120)
+        draw(data.get('h_c_last', ''), 75, 120)
+        #Wife
+        draw(data.get('h_c_first', ''), 140, 120)
+        draw(data.get('h_c_mid', ''), 145, 120)
+        draw(data.get('h_c_last', ''), 150, 120)
+
+        # Section 13: Relationship
+        # Husband
+        draw(data.get('h_c_rel', ''), 55, 125)
+        # Wife
+        draw(data.get('w_c_rel', ''), 140, 125)
+
+        # Section 14: Residence
+        # Husband
+        draw(data.get('h_c_res', ''), 55, 130)
+        # Wife
+        draw(data.get('w_c_res', ''), 140, 130)
+
+        # Section 15: Place of Marriage
+        draw(data.get('pom_office', ''), 80, 135)
+        draw(data.get('pom_city', ''), 90, 135)
+        draw(data.get('pom_prov', ''), 110, 135)
+
+        # Section 16: Date of Marriage
+        draw(data.get('dom_day', ''), 70, 140)
+        draw(data.get('dom_month', ''), 80, 140)
+        draw(data.get('dom_year', ''), 90, 140)
+
+        # Section 17: Time of Marriage
+        draw(data.get('tom', ''), 160, 140)
 
         # Section 18: Contracting Parties Recap
         draw(data.get('h_full_name', ''), 85, 185, bold=True)
@@ -108,6 +159,9 @@ def generate_full_certificate(output_file, data, show_template=False):
             draw("/", 82, 198, size=12, bold=True)
         else:
             draw("/", 147, 198, size=12, bold=True)
+
+        # Section 18
+        draw(data.get('s18_sig_day', ''), 170, 210)
 
         # Section 19: Solemnizing Officer & License Details
         if data.get('license_type') == 'a':
