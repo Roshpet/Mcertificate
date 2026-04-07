@@ -318,64 +318,138 @@ class MarriageApp:
             'h_first': self.ent_h_first.get().upper(),
             'h_middle': self.ent_h_mid.get().upper(),
             'h_last': self.ent_h_last.get().upper(),
+
             # DOB
             'h_day': self.ent_h_day.get(),
             'h_month': self.ent_h_month.get().upper(),
             'h_year': self.ent_h_year.get(),
             'h_age': self.ent_h_age.get(),
+            
             # POB
             'h_pob_city': self.ent_h_pob_city.get().upper(),
             'h_pob_prov': self.ent_h_pob_prov.get().upper(),
             'h_pob_ctry': self.ent_h_pob_ctry.get().upper(),
+
             # Sex and Citizenship
             'h_sex': self.ent_h_sex.get().upper(),
             'h_citizen': self.ent_h_citizen.get().upper(),
+
             # Residence
             'h_res': self.ent_h_res.get().upper(),
+
             # Religion
             'h_rel': self.ent_h_rel.get().upper(),
+
             # Civil Status
             'h_status': self.ent_h_status.get().upper(),
+
             # Husband Father
             'hf_first': self.ent_hf_first.get().upper(),
             'hf_mid': self.ent_hf_mid.get().upper(),
             'hf_last': self.ent_hf_last.get().upper(),
+
             # Husband Father Citizenship
             'hf_citizen': self.ent_hf_citizen.get().upper(),
 
-            # Wife Data
+            # Husband Mother
+            'hm_first': self.ent_hm_first.get().upper(),
+            'hm_mid': self.ent_hm_mid.get().upper(),
+            'hm_last': self.ent_hm_last.get().upper(),
+
+            # Husband Mother Citizenship
+            'hm_citizen': self.ent_hm_citizen.get().upper(),
+
+            # Person Who Give Consent (Husband)
+            'h_c_first': self.ent_h_c_first.get().upper(),
+            'h_c_mid': self.ent_h_c_mid.get().upper(),
+            'h_c_last': self.ent_h_c_last.get().upper(),
+
+            # Relationship (Husband)
+            'h_c_rel': self.ent_h_c_rel.get().upper(),
+
+            # Residence
+            'h_c_res': self.ent_h_c_res.get().upper(),
+
+            #----------------------------------------------------------------------------------#
+
+            # ------------------ Wife Data --------------------
             'w_first': self.ent_w_first.get().upper(),
             'w_middle': self.ent_w_mid.get().upper(),
             'w_last': self.ent_w_last.get().upper(),
+
             # POB
             'w_pob_city': self.ent_h_pob_city.get().upper(),
             'w_pob_prov': self.ent_h_pob_prov.get().upper(),
             'w_pob_ctry': self.ent_h_pob_ctry.get().upper(),
+
             # DOB
             'w_day': self.ent_w_day.get(),
             'w_month': self.ent_w_month.get().upper(),
             'w_year': self.ent_w_year.get(),
             'w_age': self.ent_w_age.get(),
+
             # Sex and Citizenship
             'w_sex': self.ent_w_sex.get().upper(),
             'w_citizen': self.ent_w_citizen.get().upper(),
+
             # Residence
-            'w_res': self.ent_h_res.get().upper(),
+            'w_res': self.ent_w_res.get().upper(),
+
             # Religion
-            'w_rel': self.ent_h_rel.get().upper(),
+            'w_rel': self.ent_w_rel.get().upper(),
+
             # Civil Status
-            'w_status': self.ent_h_status.get().upper(),
+            'w_status': self.ent_w_status.get().upper(),
+
             # Wife Father
             'wf_first': self.ent_wf_first.get().upper(),
             'wf_mid': self.ent_wf_mid.get().upper(),
             'wf_last': self.ent_wf_last.get().upper(),
+
             # Wife Father Citizenship
             'wf_citizen': self.ent_wf_citizen.get().upper(),
+
+            # Wife Mother
+            'wm_first': self.ent_wm_first.get().upper(),
+            'wm_mid': self.ent_wm_mid.get().upper(),
+            'wm_last': self.ent_wm_last.get().upper(),
+
+            # Wife Mother Citizenship
+            'wm_citizen': self.ent_wm_citizen.get().upper(),
+
+            # Person Who Give Consent (Wife)
+            'w_c_first': self.ent_w_c_first.get().upper(),
+            'w_c_mid': self.ent_w_c_mid.get().upper(),
+            'w_c_last': self.ent_w_c_last.get().upper(),
+
+            # Relationship (Wife)
+            'w_c_rel': self.ent_w_c_rel.get().upper(),
+
+            # Residence
+            'w_c_res': self.ent_w_c_res.get().upper(),
+
+            #------------------------------------------------------------------------------------#
+
+            # Place of Marriage / Section 15
+            'pom_office': self.ent_pom_office.get().upper(),
+            'pom_city': self.ent_pom_city.get().upper(),
+            'pom_prov': self.ent_pom_prov.get().upper(),
+
+            # Date of Marriage / Section 16
+            'dom_day': self.ent_dom_day.get().upper(),
+            'dom_month': self.ent_dom_month.get().upper(),
+            'dom_year': self.ent_dom_year.get().upper(),
+
+            # Time of Marriage / Section 27
+            'tom': self.ent_tom.get().upper(),
 
             # Certification / Section 18
             'h_full_name': f"{self.ent_h_first.get()} {self.ent_h_mid.get()} {self.ent_h_last.get()}".upper(),
             'w_full_name': f"{self.ent_w_first.get()} {self.ent_w_mid.get()} {self.ent_w_last.get()}".upper(),
             'sec18_entered': self.settlement_var.get() == 1,
+            's18_sig_day': self.ent_s18_sig_day.get().upper(),
+            's18_sig_month': self.ent_s18_sig_month.get().upper(),
+
             # License / Section 19
             'license_type': lic_type,
             'license_no': self.ent_lic_no.get().upper(),
